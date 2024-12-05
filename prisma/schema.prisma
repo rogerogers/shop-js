@@ -1,0 +1,286 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("PG_URL")
+}
+
+model admin_user {
+  id                      Int       @id @default(autoincrement())
+  name                    String?   @db.VarChar(50)
+  email                   String    @unique @db.VarChar(50)
+  email_verified_at       DateTime? @db.Timestamptz()
+  image                   String?
+  deleted_at              DateTime? @db.Timestamptz()
+  expired_at              DateTime? @db.Timestamptz()
+  password                String?   @db.VarChar(100)
+  password_authentication Boolean   @default(false)
+  created_at              DateTime  @default(now()) @db.Timestamptz()
+  updated_at              DateTime  @updatedAt @db.Timestamptz()
+}
+
+model third_platform {
+  id                Int                 @id @default(autoincrement())
+  name              String              @unique @db.VarChar(50)
+  logo              String
+  created_at        DateTime            @default(now()) @db.Timestamptz()
+  updated_at        DateTime            @updatedAt @db.Timestamptz()
+  third_application third_application[]
+}
+
+model third_application {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(50)
+  description  String?
+  app_key      String?        @db.VarChar(100)
+  app_secret   String?        @db.VarChar(100)
+  scope        String?
+  callback_url String?
+  created_at   DateTime       @default(now()) @db.Timestamptz()
+  updated_at   DateTime       @updatedAt @db.Timestamptz()
+  platform_id  Int
+  platform     third_platform @relation(fields: [platform_id], references: [id])
+  third_store  third_store[]
+
+  @@unique([platform_id, name])
+}
+
+model third_store {
+  id                          Int                           @id @default(autoincrement())
+  name                        String                        @unique @db.VarChar(50)
+  description                 String?
+  store_url                   String?                       @db.VarChar(100)
+  token                       String?                       @db.VarChar(255)
+  created_at                  DateTime                      @default(now()) @db.Timestamptz()
+  updated_at                  DateTime                      @updatedAt @db.Timestamptz()
+  app_id                      Int
+  application                 third_application             @relation(fields: [app_id], references: [id])
+  shopify_publication         shopify_publication[]
+  shopify_image               shopify_image[]
+  shopify_location            shopify_location[]
+  alibaba_shopify_product_rel alibaba_shopify_product_rel[]
+  shopify_metafield           shopify_metafield[]
+  shopify_collection          shopify_collection[]
+  shopify_tag                 shopify_tag[]
+  shopify_product_type        shopify_product_type[]
+  shopify_product             shopify_product[]
+
+  @@unique([app_id, name])
+}
+
+// model third_shopify_product {
+//     id Int @id @default(autoincrement())
+// }
+
+// model third_product_relation {
+//     id               Int      @id @default(autoincrement())
+//     product_id       Int
+//     third_store_id   Int
+//     third_product_id Int
+//     created_at       DateTime @default(now())
+//     updated_at       DateTime @updatedAt
+
+//     @@unique([product_id, third_store_id, third_product_id])
+// }
+
+model goods_alibaba_origin {
+  id            Int      @id @default(autoincrement())
+  offer_id      BigInt
+  origin_list   String
+  origin_detail String
+  created_at    DateTime @default(now()) @db.Timestamptz()
+  updated_at    DateTime @updatedAt @db.Timestamptz()
+
+  @@index([offer_id])
+}
+
+model shopify_image {
+  id                 Int         @id @default(autoincrement())
+  shopify_product_id String      @db.VarChar(80)
+  shopify_media_id   String      @db.VarChar(80)
+  src                String?     @db.VarChar(255)
+  origin_src         String      @db.VarChar(255)
+  created_at         DateTime    @default(now()) @db.Timestamptz()
+  updated_at         DateTime    @updatedAt @db.Timestamptz()
+  store_id           Int
+  store              third_store @relation(fields: [store_id], references: [id])
+
+  @@index([store_id, shopify_product_id, shopify_media_id])
+}
+
+model alibaba_shopify_product_rel {
+  id                 Int         @id @default(autoincrement())
+  alibaba_offer_id   BigInt
+  shopify_product_id String      @db.VarChar(80)
+  sync_status        Int         @default(0) @db.SmallInt
+  last_sync_time     DateTime    @default(now()) @db.Timestamptz()
+  store_id           Int
+  store              third_store @relation(fields: [store_id], references: [id])
+  created_at         DateTime    @default(now()) @db.Timestamptz()
+  updated_at         DateTime    @updatedAt @db.Timestamptz()
+
+  @@unique([alibaba_offer_id, shopify_product_id])
+  @@index([alibaba_offer_id])
+  @@index([shopify_product_id])
+}
+
+model shopify_publication {
+  id                     Int         @id @default(autoincrement())
+  store_id               Int
+  store                  third_store @relation(fields: [store_id], references: [id])
+  shopify_publication_id String      @db.VarChar(80)
+  name                   String      @db.VarChar(50)
+  created_at             DateTime    @default(now()) @db.Timestamptz()
+  updated_at             DateTime    @updatedAt @db.Timestamptz()
+
+  @@unique([store_id, shopify_publication_id])
+}
+
+model shopify_location {
+  id                  Int         @id @default(autoincrement())
+  name                String      @db.VarChar(150)
+  store_id            Int
+  store               third_store @relation(fields: [store_id], references: [id])
+  activatable         Boolean
+  is_primary          Boolean
+  shopify_location_id String      @db.VarChar(80)
+  created_at          DateTime    @default(now()) @db.Timestamptz()
+  updated_at          DateTime    @updatedAt @db.Timestamptz()
+
+  @@unique([store_id, shopify_location_id])
+}
+
+model shopify_metafield {
+  id                   Int         @id @default(autoincrement())
+  store_id             Int
+  store                third_store @relation(fields: [store_id], references: [id])
+  shopify_product_id   String      @db.VarChar(80)
+  shopify_metafield_id String      @db.VarChar(80)
+  namespace            String      @db.VarChar(255)
+  key                  String      @db.VarChar(64)
+  type                 String      @db.VarChar(30)
+  value                String      @db.VarChar(255)
+  owner_type           String      @db.VarChar(30)
+  created_at           DateTime    @default(now()) @db.Timestamptz()
+  updated_at           DateTime    @updatedAt @db.Timestamptz()
+
+  @@unique([store_id, shopify_product_id, owner_type, namespace, key])
+}
+
+model shopify_category {
+  id                           String                         @id @unique @db.VarChar(80)
+  name                         String                         @db.VarChar(80)
+  parent_id                    String                         @db.VarChar(80)
+  version                      String                         @db.VarChar(10)
+  created_at                   DateTime                       @default(now()) @db.Timestamptz()
+  updated_at                   DateTime                       @updatedAt @db.Timestamptz()
+  alibaba_shopify_category_rel alibaba_shopify_category_rel[]
+}
+
+model alibaba_category {
+  id                           Int                            @id @default(autoincrement())
+  alibaba_category_id          Int                            @unique
+  name                         String                         @db.VarChar(80)
+  parent_id                    Int                            @default(0)
+  is_leaf                      Boolean
+  created_at                   DateTime                       @default(now()) @db.Timestamptz()
+  updated_at                   DateTime                       @updatedAt @db.Timestamptz()
+  alibaba_shopify_category_rel alibaba_shopify_category_rel[]
+}
+
+model alibaba_pallet {
+  id                Int      @id @default(autoincrement())
+  alibaba_pallet_id String   @db.VarChar(20)
+  name              String   @db.VarChar(80)
+  created_at        DateTime @default(now()) @db.Timestamptz()
+  updated_at        DateTime @updatedAt @db.Timestamptz()
+}
+
+model alibaba_shopify_category_rel {
+  alibaba_category_id Int
+  alibaba_category    alibaba_category @relation(fields: [alibaba_category_id], references: [alibaba_category_id])
+  shopify_category_id String
+  shopify_category    shopify_category @relation(fields: [shopify_category_id], references: [id])
+
+  @@id([alibaba_category_id, shopify_category_id])
+}
+
+model shopify_collection {
+  id                    Int         @id @default(autoincrement())
+  shopify_collection_id String      @db.VarChar(80)
+  handle                String      @db.VarChar(80)
+  title                 String      @db.VarChar(80)
+  products_count        Int
+  description           String
+  description_html      String
+  store_id              Int
+  store                 third_store @relation(fields: [store_id], references: [id])
+  created_at            DateTime    @default(now()) @db.Timestamptz()
+  updated_at            DateTime    @updatedAt @db.Timestamptz()
+}
+
+model shopify_tag {
+  id               Int         @id @default(autoincrement())
+  name             String      @db.VarChar(80)
+  shopify_tag_type String
+  store_id         Int
+  store            third_store @relation(fields: [store_id], references: [id])
+  created_at       DateTime    @default(now()) @db.Timestamptz()
+  updated_at       DateTime    @updatedAt @db.Timestamptz()
+
+  @@index([store_id, shopify_tag_type, name])
+}
+
+model shopify_product_type {
+  id         Int         @id @default(autoincrement())
+  name       String      @db.VarChar(80)
+  store_id   Int
+  store      third_store @relation(fields: [store_id], references: [id])
+  created_at DateTime    @default(now()) @db.Timestamptz()
+  updated_at DateTime    @updatedAt @db.Timestamptz()
+
+  @@index([store_id, name])
+}
+
+model shopify_product {
+  id                 Int         @id @default(autoincrement())
+  shopify_product_id String      @db.VarChar(80)
+  title              String      @db.VarChar(255)
+  handle             String      @db.VarChar(255)
+  image_url          String      @db.VarChar(255)
+  description        String
+  description_html   String
+  tags               String[]
+  media_count        Int
+  store_id           Int
+  store              third_store @relation(fields: [store_id], references: [id])
+  created_at         DateTime    @default(now()) @db.Timestamptz()
+  updated_at         DateTime    @updatedAt @db.Timestamptz()
+
+  @@unique([store_id, shopify_product_id])
+}
+
+model alibaba_sku_price_change_log {
+  id             Int      @id @default(autoincrement())
+  alibaba_sku_id BigInt   @db.BigInt
+  before         Decimal  @db.Decimal(10, 2)
+  after          Decimal  @db.Decimal(10, 2)
+  changed        Decimal  @db.Decimal(10, 2)
+  change_type    Int      @db.SmallInt
+  date           DateTime @db.Date()
+  created_at     DateTime @default(now()) @db.Timestamptz()
+  updated_at     DateTime @updatedAt @db.Timestamptz()
+
+  @@unique([date, alibaba_sku_id])
+}
+
+model alibaba_goods_status_change_log {
+  id               Int      @id @default(autoincrement())
+  alibaba_offer_id BigInt
+  before           String   @db.VarChar(20)
+  after            String   @db.VarChar(20)
+  change_type      Int      @db.SmallInt
+  date             DateTime @db.Date()
+  created_at       DateTime @default(now()) @db.Timestamptz()
+  updated_at       DateTime @updatedAt @db.Timestamptz()
+
+  @@unique([date, alibaba_offer_id])
+}

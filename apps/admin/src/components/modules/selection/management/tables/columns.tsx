@@ -1,0 +1,104 @@
+'use client';
+
+import { Attribute } from '@/constants/data';
+import { Checkbox } from '@rogerogers/ui/checkbox';
+import { ColumnDef } from '@tanstack/react-table';
+
+import { NextImage } from '@rogerogers/next-common/custom/next-image';
+import Modal from './modal';
+
+export const columns: ColumnDef<Attribute>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: 'imageUrl',
+    header: () => {
+      return <div className="text-center">商品图</div>;
+    },
+    cell: ({ row }) => (
+      <NextImage
+        src={row.getValue('imageUrl')}
+        className="w-full h-full max-w-[200px] min-w-[100px]"
+      />
+    ),
+  },
+  {
+    accessorKey: 'subject',
+    header: ({ column }) => {
+      return <div className="text-center">标题</div>;
+    },
+    cell: ({ row }) => (
+      <div className="lowercase">{row.getValue('subject')}</div>
+    ),
+  },
+  {
+    accessorKey: 'offerId',
+    header: () => <div className="text-center">{'offerId'}</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="text-center font-medium">{row.getValue('offerId')}</div>
+      );
+    },
+  },
+  {
+    accessorKey: 'monthSold',
+    header: () => <div className="text-center">月销量</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="text-center font-medium">
+          {row.getValue('monthSold')}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'minOrderQuantity',
+    header: () => <div className="text-center">最小采购</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="text-center font-medium">
+          {row.getValue('minOrderQuantity')}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'createDate',
+    header: () => <div className="text-center">创建时间</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="text-center font-medium">
+          {row.getValue('createDate')}
+        </div>
+      );
+    },
+  },
+  {
+    id: 'actions',
+    enableHiding: false,
+    header: () => <div className="text-center">上架</div>,
+    cell: ({ row }) => {
+      return <Modal id={row.id} />;
+    },
+  },
+];

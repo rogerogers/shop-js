@@ -1,0 +1,96 @@
+'use server';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { headers } from 'next/headers';
+import { stringify } from 'qs';
+
+const apiHost = process.env.API_HOST || 'http://localhost:3081/api';
+
+const commonHeaders = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+};
+
+function getUrl(path: string, query: any) {
+  const params = query ? stringify(query) : null;
+
+  return `${apiHost}${path}${params ? `?${params}` : ''}`;
+}
+
+function getBody(payload: any) {
+  return payload ? JSON.stringify(payload) : undefined;
+}
+
+async function getOptions(options: any, payload: any): Promise<RequestInit> {
+  const body = getBody(payload);
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  options?.headers
+    ? (options.headers = {
+        cookie: (await headers()).get('cookie'),
+        ...options.headers,
+      })
+    : (options.headers = { cookie: (await headers()).get('cookie') });
+
+  return {
+    ...options,
+    headers: {
+      ...commonHeaders,
+      ...options?.headers,
+    },
+    body,
+    redirect: 'error',
+  };
+}
+
+async function makeRequest(
+  path: string,
+  payload: any,
+  query: any,
+  options: any,
+) {
+  const url = getUrl(path, query);
+  const requestOptions = await getOptions(options, payload);
+
+  const response = await fetch(url, requestOptions);
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    return errorData;
+  }
+
+  return await response.json();
+}
+
+export async function getRequest(path: string, query: any, options: any) {
+  return makeRequest(path, undefined, query, {
+    ...options,
+    method: 'GET',
+  });
+}
+
+export async function postRequest(path: string, payload: any, options: any) {
+  return makeRequest(path, payload, undefined, {
+    ...options,
+    method: 'POST',
+  });
+}
+
+export async function deleteRequest(path: string, options: any) {
+  return makeRequest(path, undefined, undefined, {
+    ...options,
+    method: 'DELETE',
+  });
+}
+
+export async function putRequest(path: string, payload: any, options: any) {
+  return makeRequest(path, payload, undefined, {
+    ...options,
+    method: 'PUT',
+  });
+}
+
+export async function patchRequest(path: string, payload: any, options: any) {
+  return makeRequest(path, payload, undefined, {
+    ...options,
+    method: 'PATCH',
+  });
+}

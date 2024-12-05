@@ -1,0 +1,14 @@
+{
+  "title": "Oms",
+  "Login": {
+    "message": "Login to Oms",
+    "description": "Enter your work email and password below to login",
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Login",
+    "enterPassword": "Enter your password",
+    "enterEmail": "Enter your work email",
+    "error": "{error, select, CredentialsSignin {Invalid email or password} other {Unknown error}}"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "title": "Oms管理系统",
+  "Login": {
+    "message": "登录 Oms",
+    "description": "输入账号密码登录",
+    "title": "Login",
+    "email": "邮箱",
+    "password": "密码",
+    "submit": "登录",
+    "enterPassword": "请输入密码",
+    "enterEmail": "请输入工作邮箱",
+    "error": "{error, select, CredentialsSignin {Invalid email or password} other {Unknown error}}"
+  }
+}
