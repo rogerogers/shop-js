@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@rogerogers/ui/card';
+import { JSX } from 'react';
 
 export default function Popup(): JSX.Element {
   return (

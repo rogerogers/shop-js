@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@rogerogers/ui": "workspace:*",
-    "next": "14.2.18",
+    "next": "^14.2.20",
     "next-intl": "^3.26.0",
     "qs": "^6.13.1",
     "react": "^18.3.1",
@@ -30,8 +30,8 @@
     "@types/react": "^18.3.14",
     "@types/react-dom": "^18.3.2",
     "@types/uuid": "^10.0.0",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "14.2.18",
+    "eslint": "^9.12.0",
+    "eslint-config-next": "15.0.4",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
     "typescript": "^5.7.2"

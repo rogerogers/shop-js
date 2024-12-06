@@ -20,7 +20,7 @@ interface TextStyle
     FormatAction,
     'value' | 'icon' | 'action' | 'isActive' | 'canExecute'
   > {
-  element: keyof JSX.IntrinsicElements;
+  element: keyof React.JSX.IntrinsicElements;
   level?: Level;
   className: string;
 }
