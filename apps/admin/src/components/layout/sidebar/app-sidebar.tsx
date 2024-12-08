@@ -144,6 +144,10 @@ const data = {
               title: '数据分析',
               url: '/platforms/shopify/analytics',
             },
+            {
+              title: '侵权词管理',
+              url: '/platforms/shopify/infringement',
+            },
           ],
         },
       ],

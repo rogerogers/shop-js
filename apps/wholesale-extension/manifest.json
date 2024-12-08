@@ -15,7 +15,8 @@
   "icons": {
     "128": "icon-128.png"
   },
-  "permissions": ["activeTab", "sidePanel"],
+  "permissions": ["activeTab", "sidePanel", "cookies", "storage"],
+  "host_permissions": ["*://*.1688.com/"],
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "<all_urls>"],
