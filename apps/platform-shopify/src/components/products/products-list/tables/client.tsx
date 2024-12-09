@@ -6,7 +6,9 @@ import StoreSelect from '../select/store';
 import { columns } from './columns';
 import SearchBar from './search-bar';
 
-interface SelectionTableProps extends ServerParams {
+interface SelectionTableProps {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
   data: ShopifyProduct[];
   rowCount: number;
 }
@@ -14,17 +16,9 @@ interface SelectionTableProps extends ServerParams {
 export const PlatformShopifyProductListTable: React.FC<
   SelectionTableProps
 > = async ({ searchParams, data, rowCount }) => {
-  const pageIndex =
-    searchParams['page'] !== null &&
-    !isNaN(parseInt(searchParams['page'] as string, 10))
-      ? parseInt(searchParams['page'] as string, 10) - 1
-      : 0;
-
-  const pageSize =
-    searchParams['page_size'] !== null &&
-    !isNaN(parseInt(searchParams['page_size'] as string, 10))
-      ? parseInt(searchParams['page_size'] as string, 10)
-      : 20;
+  const { page, page_size } = searchParams;
+  const pageIndex = page ? parseInt(page as string) : 1;
+  const pageSize = page_size ? parseInt(page_size as string) : 20;
 
   const stores = await listThirdStores({
     platform: 'shopify',
@@ -41,8 +35,8 @@ export const PlatformShopifyProductListTable: React.FC<
         rowCount={rowCount}
         data={data}
         defaultPagination={{
-          pageIndex: pageIndex,
-          pageSize: pageSize,
+          pageIndex: pageIndex as number,
+          pageSize: pageSize as number,
         }}
       />
     </>

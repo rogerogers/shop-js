@@ -2,7 +2,8 @@ import { listCategory } from '@/data/server';
 import { transformToTree } from '@/lib/utils';
 import { DataTable } from './data-table';
 
-export default async function Category({ params, searchParams }: ServerParams) {
+export default async function Category(props: ServerParams) {
+  const searchParams = await props.searchParams;
   const resData = await listCategory(searchParams);
   const categories = resData?.data;
   const data = transformToTree(categories.categories, 'category_id', '');

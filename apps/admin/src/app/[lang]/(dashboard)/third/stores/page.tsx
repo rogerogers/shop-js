@@ -4,7 +4,8 @@ import { listThirdStores } from '@/data/third-server';
 
 const title = '店铺管理';
 const desc = '店铺管理';
-const Page = async function ({ params, searchParams }: ServerParams) {
+const Page = async function (props: ServerParams) {
+  const searchParams = await props.searchParams;
   const data = await listThirdStores({
     page: searchParams?.page ?? 1,
     page_size: searchParams?.page_size ?? 20,
@@ -23,7 +24,6 @@ const Page = async function ({ params, searchParams }: ServerParams) {
         ]}
       />
       <ThirdStoresTable
-        params={params}
         searchParams={searchParams}
         data={result}
         rowCount={data?.data?.pagination?.total}

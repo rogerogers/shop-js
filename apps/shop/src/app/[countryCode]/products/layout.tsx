@@ -3,7 +3,7 @@ export default async function Layout({
   params,
 }: {
   children: React.ReactNode;
-  params: { countryCode: string };
+  params: Promise<{ countryCode: string }>;
 }) {
   return <div className="container">{children}</div>;
 }

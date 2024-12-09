@@ -1,4 +1,4 @@
 interface ServerParams {
-  params: { slug: string; attribute_id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string; attribute_id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }

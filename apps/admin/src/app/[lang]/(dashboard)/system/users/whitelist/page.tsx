@@ -5,7 +5,9 @@ import { authWhitelist } from '@/data/auth-server';
 const title = '白名单管理';
 const desc = '白名单管理';
 
-export default async function Page({ params, searchParams }: ServerParams) {
+export default async function Page(props: ServerParams) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const data = await authWhitelist(searchParams);
   const { whitelist, pagination } = data?.data;
   return (
@@ -29,7 +31,6 @@ export default async function Page({ params, searchParams }: ServerParams) {
         ]}
       />
       <UsersWhitelistTable
-        params={params}
         data={whitelist}
         rowCount={pagination?.total}
         searchParams={searchParams}

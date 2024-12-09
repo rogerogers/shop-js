@@ -4,7 +4,9 @@ import { listSelectionData } from '@/data/selection-server';
 
 const title = '选品1688货品';
 const desc = '选品1688货品';
-const Page = async function ({ params, searchParams }: ServerParams) {
+const Page = async function (props: ServerParams) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const data = await listSelectionData({
     page: searchParams?.page ?? 1,
     page_size: searchParams?.page_size ?? 20,
@@ -32,7 +34,6 @@ const Page = async function ({ params, searchParams }: ServerParams) {
         ]}
       />
       <SelectionTable
-        params={params}
         searchParams={searchParams}
         data={result?.data}
         rowCount={result?.totalRecords}

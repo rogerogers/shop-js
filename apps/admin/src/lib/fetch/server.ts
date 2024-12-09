@@ -1,4 +1,4 @@
-import { headers } from 'next/headers';
+import { headers, type UnsafeUnwrappedHeaders } from 'next/headers';
 import { stringify } from 'qs';
 
 const apiHost = process.env.API_HOST || 'http://localhost:3081/api';
@@ -18,14 +18,20 @@ function getBody(payload: any) {
   return payload ? JSON.stringify(payload) : undefined;
 }
 
-function getOptions(options: any, payload: any) {
+async function getOptions(options: any, payload: any) {
   const body = getBody(payload);
   options?.headers
     ? (options.headers = {
-        cookie: headers().get('cookie'),
+        cookie: ((await headers()) as unknown as UnsafeUnwrappedHeaders).get(
+          'cookie',
+        ),
         ...options.headers,
       })
-    : (options.headers = { cookie: headers().get('cookie') });
+    : (options.headers = {
+        cookie: ((await headers()) as unknown as UnsafeUnwrappedHeaders).get(
+          'cookie',
+        ),
+      });
 
   return {
     ...options,
@@ -45,7 +51,7 @@ async function makeRequest(
   options: any,
 ) {
   const url = getUrl(path, query);
-  const requestOptions = getOptions(options, payload);
+  const requestOptions = await getOptions(options, payload);
 
   const response = await fetch(url, requestOptions);
 

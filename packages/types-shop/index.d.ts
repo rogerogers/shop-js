@@ -1,6 +1,6 @@
 declare interface ServerParams {
-  params: { slug: string; handle: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string; handle: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 declare type Attribute = {

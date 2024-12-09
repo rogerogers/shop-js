@@ -1,10 +1,8 @@
 import { categoryWithAttribute, getCategory } from '@/data/server';
 import ClientWarp from './warp';
 
-export default async function ProductCreate({
-  params,
-  searchParams,
-}: ServerParams) {
+export default async function ProductCreate(props: ServerParams) {
+  const searchParams = await props.searchParams;
   const data = await getCategory(searchParams.category_id as string);
   const categoryAttributes = await categoryWithAttribute(searchParams);
   return (

@@ -6,7 +6,7 @@ import sortProducts from '@/lib/util/sort-products';
 import transformProductPreview from '@/lib/util/transform-product-preview';
 
 import medusaError from '@/lib/util/medusa-error';
-import { cookies } from 'next/headers';
+import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 
 const emptyResponse = {
   response: { products: [], count: 0 },
@@ -26,7 +26,7 @@ const getMedusaHeaders = (tags) => {
     },
   };
 
-  const token = cookies().get('_medusa_jwt')?.value;
+  const token = (cookies() as unknown as UnsafeUnwrappedCookies).get('_medusa_jwt')?.value;
 
   if (token) {
     headers.authorization = `Bearer ${token}`;
@@ -193,7 +193,7 @@ export async function getToken(credentials) {
     })
     .then(({ access_token }) => {
       access_token &&
-        cookies().set('_medusa_jwt', access_token, {
+        (cookies() as unknown as UnsafeUnwrappedCookies).set('_medusa_jwt', access_token, {
           maxAge: 60 * 60 * 24 * 7,
           httpOnly: true,
           sameSite: 'strict',

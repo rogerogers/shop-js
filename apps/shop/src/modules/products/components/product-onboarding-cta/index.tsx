@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
-import { cookies } from 'next/headers';
+import { cookies, type UnsafeUnwrappedCookies } from 'next/headers';
 
 const ProductOnboardingCta = () => {
-  const isOnboarding = cookies().get('_medusa_onboarding')?.value === 'true';
+  const isOnboarding = (cookies() as unknown as UnsafeUnwrappedCookies).get('_medusa_onboarding')?.value === 'true';
 
   if (!isOnboarding) {
     return null;

@@ -3,14 +3,16 @@ import { LanguageTabs } from '@/components/modules/selection/alibaba/detail/tabs
 import { listSelectionData } from '@/data/selection-server';
 
 interface detailParams extends ServerParams {
-  params: {
+  params: Promise<{
     offerId: string;
     attribute_id: string;
     slug: string;
-  };
+  }>;
 }
 
-const Page = async function ({ params, searchParams }: detailParams) {
+const Page = async function(props: detailParams) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const data = await listSelectionData({
     page: searchParams?.page ?? 1,
     page_size: searchParams?.page_size ?? 20,

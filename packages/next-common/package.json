@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@rogerogers/ui": "workspace:*",
-    "next": "^14.2.20",
+    "next": "15.0.4",
     "next-intl": "^3.26.0",
     "qs": "^6.13.1",
     "react": "^19.0.0",

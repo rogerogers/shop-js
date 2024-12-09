@@ -1,11 +1,11 @@
 import { PurchaseOrderTable } from '@/components/modules/purchase/orders/tables/client';
 import { purchaseReveiveAddress } from '@/data/purchase-server';
-const Page = async function ({ params, searchParams }: ServerParams) {
+const Page = async function (props: ServerParams) {
+  const searchParams = await props.searchParams;
   const data = await purchaseReveiveAddress();
   const result = data?.result;
   return (
     <PurchaseOrderTable
-      params={params}
       searchParams={searchParams}
       data={result?.receiveAddressItems}
       rowCount={result?.receiveAddressItems?.length}

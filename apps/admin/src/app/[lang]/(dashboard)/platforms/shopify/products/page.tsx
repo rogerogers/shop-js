@@ -1,8 +1,10 @@
 import PageHeader from '@/components/layout/page-header';
 import { listPlatformShopifyProduct } from '@/data/shopify-server';
 import { PlatformShopifyProductListTable } from '@rogerogers/platform-shopify/products/list';
-const Page = async function ({ params, searchParams }: ServerParams) {
-  const { store_id } = await searchParams;
+const Page = async function (props: ServerParams) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+  const { store_id } = searchParams;
   const data = await listPlatformShopifyProduct({
     page: searchParams?.page ?? 1,
     page_size: searchParams?.page_size ?? 20,

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export default async function AuthenticationPage() {
   const session = await auth();
-  const referer = headers().get('referer');
+  const referer = (await headers()).get('referer');
   let redirectPath = '/dashboard';
   const locale = await getLocale();
   if (referer) {

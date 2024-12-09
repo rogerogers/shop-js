@@ -16,13 +16,18 @@ export const metadata = {
   icons: '/assets/buy.png',
 };
 
-export default async function RootLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: { countryCode: string };
-}) {
+export default async function RootLayout(
+  props: {
+    children: React.ReactNode;
+    params: Promise<{ countryCode: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const message = await getMessages();
   return (
     <html lang={params.countryCode} suppressHydrationWarning>

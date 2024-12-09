@@ -80,7 +80,8 @@ const getPricedProductByHandle = async (handle, region) => {
   // todo end
 };
 
-export default async function ProductPage({ params }) {
+export default async function ProductPage(props) {
+  const params = await props.params;
   // todo begin
   // const region = await getRegion(params.countryCode);
 
