@@ -18,17 +18,17 @@
   "dependencies": {
     "@rogerogers/ui": "workspace:*",
     "next": "15.0.4",
-    "next-intl": "^3.26.0",
+    "next-intl": "^3.26.1",
     "qs": "^6.13.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.17.9",
+    "@types/node": "^20.17.10",
     "@types/qs": "^6.9.17",
     "@types/react": "^19.0.1",
-    "@types/react-dom": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
     "@types/uuid": "^10.0.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "15.0.4",
