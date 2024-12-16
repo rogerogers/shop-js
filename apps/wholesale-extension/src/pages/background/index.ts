@@ -37,6 +37,7 @@ setInterval(async () => {
       },
       body: JSON.stringify({
         offer_id: json_obj?.offer_id,
+        open_seller_id: json_obj?.open_seller_id,
         store_data: storeData?.[1],
         init_data: initData?.[1],
       }),
