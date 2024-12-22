@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 
 const baseUrl =
-  process.env.NEXT_PUBLIC_SHOP_BACKEND_URL || 'http://localhost:4091';
+  process.env.NEXT_PUBLIC_SHOP_BACKEND_URL || 'http://localhost:5000';
 
 const commonHeaders = {
   Accept: 'application/json',

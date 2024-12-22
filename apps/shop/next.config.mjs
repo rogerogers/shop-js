@@ -18,6 +18,10 @@ const nextConfig = {
         hostname: 'medusa-public-images.s3.eu-west-1.amazonaws.com',
       },
       {
+        protocol: 'https',
+        hostname: 'cbu01.alicdn.com',
+      },
+      {
         protocol: 'http',
         hostname: 'localhost',
       },
