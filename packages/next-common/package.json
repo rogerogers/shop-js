@@ -18,7 +18,7 @@
   "dependencies": {
     "@rogerogers/ui": "workspace:*",
     "next": "15.1.2",
-    "next-intl": "^3.26.2",
+    "next-intl": "^3.26.3",
     "qs": "^6.13.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
