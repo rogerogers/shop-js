@@ -1,3 +1,7 @@
+chrome.sidePanel
+  .setPanelBehavior({ openPanelOnActionClick: true })
+  .catch((error) => console.error(error));
+
 console.log('background script loaded');
 setInterval(async () => {
   console.log(import.meta.env.VITE_API_HOST);

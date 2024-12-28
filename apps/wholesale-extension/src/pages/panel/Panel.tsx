@@ -18,7 +18,24 @@ export default function Popup(): JSX.Element {
         <CardDescription>wholesale</CardDescription>
       </CardHeader>
       <CardContent className="flex mx-auto justify-center">
-        <Button>采集</Button>
+        <Button
+          onClick={() => {
+            chrome.tabs.query(
+              { active: true, currentWindow: true },
+              function (tabs) {
+                chrome.notifications.create({
+                  type: 'basic',
+                  iconUrl:
+                    'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://hibobi.com&size=128',
+                  title: 'wholesale',
+                  message: tabs[0].url ?? '',
+                });
+              },
+            );
+          }}
+        >
+          采集
+        </Button>
       </CardContent>
       <CardFooter>wholesale</CardFooter>
     </Card>
