@@ -1,14 +1,15 @@
-import { createRoot } from 'react-dom/client';
-// import './style.css';
-const div = document.createElement('div');
-div.id = '__root';
-document.body.appendChild(div);
+console.log('content script start');
 
-const rootContainer = document.querySelector('#__root');
-if (!rootContainer) throw new Error("Can't find Content root element");
-const root = createRoot(rootContainer);
-root.render(
-  <div className="absolute hidden bottom-0 left-0 text-lg text-black bg-amber-400 z-50">
-    content script <span className="your-class">loaded</span>
-  </div>,
-);
+// inject injected script
+console.log(location.href);
+const s = document.createElement('script');
+s.src = chrome.runtime.getURL('src/pages/content/injected.js');
+s.onload = function () {
+  this.remove();
+};
+(document.head || document.documentElement).appendChild(s);
+
+// receive message from injected script
+window.addEventListener('message', function (e) {
+  console.log('content script received:', e.data.type, e.data.data);
+});

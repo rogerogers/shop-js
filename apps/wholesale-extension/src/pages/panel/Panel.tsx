@@ -1,43 +1,47 @@
-import '@pages/panel/Panel.css';
-import { Button } from '@rogerogers/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@rogerogers/ui/card';
-import { JSX } from 'react';
+import { Card } from '@rogerogers/ui/card';
+import { Toaster } from '@rogerogers/ui/toaster';
 
-export default function Popup(): JSX.Element {
+import { getDomainWithoutSubdomains } from '@/lib/utils';
+import { useEffect, useState } from 'react';
+import { AlibabaSearchPanel } from './site/alibaba/searchPanel/index';
+import { DefaultPanel } from './site/default';
+import { TemuPanel } from './site/temu/panel';
+
+const Condition = ({ site }: { site: string }) => {
+  switch (site) {
+    case 'temu':
+      return <TemuPanel />;
+    case 'alibabaSearch':
+      return <AlibabaSearchPanel />;
+    default:
+      return <DefaultPanel />;
+  }
+};
+
+export default function Popup() {
+  const [site, setSite] = useState<string>('temu');
+  useEffect(() => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      switch (getDomainWithoutSubdomains(tabs[0].url as string)) {
+        case 'kuajingmaihuo.com':
+          setSite('temu');
+          break;
+        case '1688.com':
+          setSite('alibabaSearch');
+          break;
+        case 'noon.partners':
+          setSite('noonAds');
+          break;
+        default:
+          setSite('default');
+          break;
+      }
+    });
+  }, [site]);
   return (
-    <Card className="h-screen">
-      <CardHeader>
-        <CardTitle>wholesale</CardTitle>
-        <CardDescription>wholesale</CardDescription>
-      </CardHeader>
-      <CardContent className="flex mx-auto justify-center">
-        <Button
-          onClick={() => {
-            chrome.tabs.query(
-              { active: true, currentWindow: true },
-              function (tabs) {
-                chrome.notifications.create({
-                  type: 'basic',
-                  iconUrl:
-                    'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://hibobi.com&size=128',
-                  title: 'wholesale',
-                  message: tabs[0].url ?? '',
-                });
-              },
-            );
-          }}
-        >
-          采集
-        </Button>
-      </CardContent>
-      <CardFooter>wholesale</CardFooter>
+    <Card className={'h-screen'}>
+      <Condition site={site} />
+      <Toaster />
     </Card>
   );
 }

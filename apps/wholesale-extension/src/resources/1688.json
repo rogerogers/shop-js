@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "https://h5api.m.1688.com/h5/mtop.alibaba.alisite.cbu.server.moduleasyncservice/1.0/*",
+      "resourceTypes": ["xmlhttprequest"]
+    }
+  }
+]

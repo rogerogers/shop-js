@@ -8,12 +8,14 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "contentStyle.css",
-        "dev-icon-128.png",
-        "dev-icon-32.png"
-      ],
+      "resources": ["contentStyle.css", "dev-icon-128.png", "dev-icon-32.png"],
       "matches": []
+    },
+    {
+      "resources": ["src/pages/content/injected.js"],
+      "run_at": "document_start",
+      "matches": ["*://*.1688.com/*"],
+      "all_frames": true
     }
   ]
 }

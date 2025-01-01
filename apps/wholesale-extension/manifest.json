@@ -22,8 +22,20 @@
     "storage",
     "tabs",
     "webNavigation",
-    "notifications"
+    "notifications",
+    "scripting",
+    "declarativeNetRequest",
+    "webRequest"
   ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "1688-rules",
+        "enabled": true,
+        "path": "src/resources/1688.json"
+      }
+    ]
+  },
   "host_permissions": ["*://*.1688.com/"],
   "content_scripts": [
     {
@@ -32,6 +44,10 @@
       "css": ["contentStyle.css"]
     }
   ],
+  "externally_connectable": {
+    "matches": ["*://*.1688.com/*"],
+    "accepts_tls_channel_id": false
+  },
   "side_panel": {
     "default_path": "src/pages/panel/index.html"
   },
@@ -39,7 +55,13 @@
   "web_accessible_resources": [
     {
       "resources": ["contentStyle.css", "icon-128.png", "icon-32.png"],
-      "matches": []
+      "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["src/pages/content/injected.js"],
+      "run_at": "document_start",
+      "matches": ["*://*.1688.com/*"],
+      "all_frames": true
     }
   ]
 }
