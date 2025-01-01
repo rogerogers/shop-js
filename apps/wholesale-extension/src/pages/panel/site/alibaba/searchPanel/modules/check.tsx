@@ -24,7 +24,7 @@ const FormSchema = z.object({
   }),
 });
 
-export function CheckImageList({ images }: { images: CheckType[] }) {
+export function CheckImageList({ images = [] }: { images: CheckType[] }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -51,21 +51,21 @@ export function CheckImageList({ images }: { images: CheckType[] }) {
       <Button
         type="button"
         onClick={() => {
-          if (itemsValue.length === images.length) {
+          if (itemsValue.length === images?.length) {
             form.setValue('items', []);
           } else {
             form.setValue(
               'items',
-              images.map((item) => item.id),
+              images?.map((item) => item.id),
             );
           }
         }}
         size="sm"
       >
-        {itemsValue.length === images.length ? '取消全部' : '选择全部'}
+        {itemsValue.length === (images?.length ?? 0) ? '取消全部' : '选择全部'}
       </Button>
       <div>
-        当前选中: {itemsValue.length}/{images.length}
+        当前选中: {itemsValue.length}/{images?.length ?? 0}
       </div>
       <Button type="submit" size="sm">
         采集
