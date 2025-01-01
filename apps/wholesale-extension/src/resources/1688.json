@@ -6,8 +6,8 @@
       "type": "allow"
     },
     "condition": {
-      "urlFilter": "https://h5api.m.1688.com/h5/mtop.alibaba.alisite.cbu.server.moduleasyncservice/1.0/*",
-      "resourceTypes": ["xmlhttprequest"]
+      "urlFilter": "https://*.1688.com/*",
+      "resourceTypes": ["xmlhttprequest", "script"]
     }
   }
 ]

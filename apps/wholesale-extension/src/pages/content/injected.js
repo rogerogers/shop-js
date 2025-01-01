@@ -10,6 +10,23 @@ const getRequestPath = (urlString) => {
     return null;
   }
 };
+// const getParams = (urlString) => {
+//   if (urlString.includes('//')) {
+//     urlString = 'https:' + urlString;
+//   }
+//   try {
+//     const url = new URL(urlString);
+//     const params = new URLSearchParams(url.search);
+//     const result = {};
+//     for (const [key, value] of params.entries()) {
+//       result[key] = value;
+//     }
+//     return result;
+//   } catch (error) {
+//     console.error('Invalid URL:', error);
+//     return null;
+//   }
+// };
 
 (function () {
   var XHR = XMLHttpRequest.prototype;
@@ -31,15 +48,10 @@ const getRequestPath = (urlString) => {
           '/h5/mtop.alibaba.alisite.cbu.server.moduleasyncservice/1.0/',
         ].includes(pathname)
       ) {
-        console.log(this.response, this._url, '111');
-        chrome.runtime.sendMessage(
-          'nlgclliiihmeiiphlhphjgjahdghloah',
-          {
-            type: 'alibabaStoreProducts',
-            data: this.response,
-          },
-          () => {},
-        );
+        chrome.runtime.sendMessage('nlgclliiihmeiiphlhphjgjahdghloah', {
+          type: 'alibabaStoreProducts',
+          data: this.response,
+        });
       }
     });
     return send.apply(this, arguments);

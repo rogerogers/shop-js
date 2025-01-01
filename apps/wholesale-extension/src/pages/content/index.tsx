@@ -5,11 +5,6 @@ console.log(location.href);
 const s = document.createElement('script');
 s.src = chrome.runtime.getURL('src/pages/content/injected.js');
 s.onload = function () {
-  this.remove();
+  // this.remove();
 };
 (document.head || document.documentElement).appendChild(s);
-
-// receive message from injected script
-window.addEventListener('message', function (e) {
-  console.log('content script received:', e.data.type, e.data.data);
-});

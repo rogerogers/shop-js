@@ -41,6 +41,7 @@
     {
       "matches": ["http://*/*", "https://*/*", "<all_urls>"],
       "js": ["src/pages/content/index.tsx"],
+      "run_at": "document_start",
       "css": ["contentStyle.css"]
     }
   ],

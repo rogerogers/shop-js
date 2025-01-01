@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from '@rogerogers/ui/form';
 import { toast } from '@rogerogers/ui/hooks/use-toast';
+import { useEffect } from 'react';
 
 const FormSchema = z.object({
   items: z.array(z.string()).refine((value) => value.some((item) => item), {
@@ -30,6 +31,9 @@ export function CheckImageList({ images }: { images: CheckType[] }) {
       items: [],
     },
   });
+  useEffect(() => {
+    form.reset();
+  }, [images]);
   const itemsValue = useWatch({ name: 'items', control: form.control });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {

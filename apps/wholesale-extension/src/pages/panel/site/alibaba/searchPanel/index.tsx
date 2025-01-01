@@ -17,7 +17,8 @@ export const AlibabaSearchPanel = () => {
       const requestData = JSON.parse(request.data);
       switch (request.type) {
         case 'alibabaStoreProducts':
-          offerList = requestData.data?.content?.offerList?.map((i) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          offerList = requestData.data?.content?.offerList?.map((i: any) => {
             return {
               id: i.id,
               label: 'https://cbu01.alicdn.com/' + i.offerImages[0].imageURI,
@@ -25,33 +26,26 @@ export const AlibabaSearchPanel = () => {
             };
           });
           setImgList(offerList);
-          console.log(offerList);
           break;
       }
       sendResponse({});
     },
   );
   chrome.runtime.onMessage.addListener(function (request) {
-    console.log(request);
     switch (request.type) {
       case 'alibabaSearchList':
         setImgList(request.data);
         break;
     }
   });
-  // chrome.tabs.onUpdated.addListener(() => {
-  //   console.log('update');
-  //   // setImgList([]);
-  // });
   useEffect(() => {
     chrome.storage.local.get(['alibabaScrollToBottom'], (result) => {
       setScrollToBottom(result.alibabaScrollToBottom);
-      console.log(result);
       if (result.alibabaScrollToBottom) {
-        console.log('fuck');
         window.scrollTo({
           left: 0,
           top: document.body.scrollHeight,
+          behavior: 'smooth',
         });
       }
     });
@@ -61,10 +55,10 @@ export const AlibabaSearchPanel = () => {
         func: () => {
           chrome.storage.local.get(['alibabaScrollToBottom'], (result) => {
             if (result.alibabaScrollToBottom) {
-              console.log('fuck');
               window.scrollTo({
                 left: 0,
                 top: document.body.scrollHeight,
+                behavior: 'smooth',
               });
             }
           });
@@ -78,6 +72,9 @@ export const AlibabaSearchPanel = () => {
             const fatherAChildA = img
               .closest('a')
               ?.querySelector('div.hover-actions>a');
+            const title = fatherA
+              ?.querySelector('div.title-text')
+              ?.textContent?.trim();
             let offerId =
               URL.parse(
                 fatherAChildA?.getAttribute('href') ?? '',
@@ -107,6 +104,7 @@ export const AlibabaSearchPanel = () => {
             tmpImgList.push({
               id: offerId,
               label: img.getAttribute('src') ?? '',
+              title: title ?? '',
             });
           }
           chrome.runtime.sendMessage({
