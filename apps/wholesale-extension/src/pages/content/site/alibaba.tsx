@@ -8,7 +8,7 @@ const initSubmit = () => {
   submitButton.innerHTML = '批量采集';
   submitButton.setAttribute(
     'style',
-    'position: fixed; top: 50%; right: 20px; height: 33px; cursor: pointer; color: white; background-color: #1677ff; border: 0; border-radius: 4px; display: inline-flex; align-items: center;',
+    'position: fixed; top: 50%; right: 20px; height: 33px; cursor: pointer; color: white; background-color: #1677ff; border: 0; border-radius: 4px; display: inline-flex; align-items: center; z-index: 99;',
   );
   document.body.appendChild(submitButton);
   document
@@ -33,7 +33,7 @@ const initSelectAll = () => {
   selectButton.innerHTML = '选择全部';
   selectButton.setAttribute(
     'style',
-    'position: fixed; top: calc(50% - 50px); right: 20px; height: 33px; cursor: pointer; color: white; background-color: #1677ff; border: 0; border-radius: 4px; display: inline-flex; align-items: center;',
+    'position: fixed; top: calc(50% - 50px); right: 20px; height: 33px; cursor: pointer; color: white; background-color: #1677ff; border: 0; border-radius: 4px; display: inline-flex; align-items: center; z-index: 99;',
   );
   document.body.appendChild(selectButton);
   document
@@ -43,7 +43,8 @@ const initSelectAll = () => {
       scrollToBottom(100, 50, () => {
         for (const i of document.querySelectorAll('input.abcclass')) {
           const offerId = findOfferId(i);
-          if (offerId) {
+          //@ts-expect-error ts(2339)
+          if (offerId && !i.disabled) {
             i.setAttribute('checked', 'checked');
           }
         }
