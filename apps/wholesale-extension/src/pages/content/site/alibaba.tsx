@@ -42,7 +42,10 @@ const initSelectAll = () => {
       // 调用函数，每50毫秒滚动100像素
       scrollToBottom(100, 50, () => {
         for (const i of document.querySelectorAll('input.abcclass')) {
-          i.setAttribute('checked', 'checked');
+          const offerId = findOfferId(i);
+          if (offerId) {
+            i.setAttribute('checked', 'checked');
+          }
         }
       });
     });

@@ -54,62 +54,87 @@ export const AlibabaSearchPanel = () => {
         target: { tabId: tabs[0].id as number },
         func: () => {
           chrome.storage.local.get(['alibabaScrollToBottom'], (result) => {
-            if (result.alibabaScrollToBottom) {
-              window.scrollTo({
-                left: 0,
-                top: document.body.scrollHeight,
-                behavior: 'smooth',
-              });
-            }
-          });
-          const tmpImgList: CheckType[] = [];
-          const offerList = document.querySelector(
-            'div.space-common-offerlist',
-          );
-          const imgs = offerList?.querySelectorAll('img.main-img');
-          for (const img of imgs ?? []) {
-            const fatherA = img.closest('a');
-            const fatherAChildA = img
-              .closest('a')
-              ?.querySelector('div.hover-actions>a');
-            const title = fatherA
-              ?.querySelector('div.title-text')
-              ?.textContent?.trim();
-            let offerId =
-              URL.parse(
-                fatherAChildA?.getAttribute('href') ?? '',
-              )?.searchParams.get('offerIds') ?? '';
-            if (!offerId) {
-              offerId =
-                (fatherA?.getAttribute('href') ?? '').match(
-                  'offer/(?<offerId>.*).html',
-                )?.groups?.offerId ?? '';
-            }
-            if (!offerId) {
-              offerId =
-                fatherA?.getAttribute('data-renderkey')?.split('_').at(-1) ??
-                '';
-            }
-            if (!offerId) {
-              const firstOfferId = fatherA
-                ?.getAttribute('data-aplus-report')
-                ?.split('^')
-                .filter((i) => i.includes('offerId'))[0];
+            function funcScrollToBottom(
+              step: number,
+              interval: number,
+              onEnd: () => void,
+            ) {
+              const clientHeight = document.documentElement.clientHeight;
+              let scrollTop =
+                document.documentElement.scrollTop || document.body.scrollTop;
 
-              offerId = firstOfferId?.split('@').at(-1) ?? '';
+              const timer = setInterval(() => {
+                const scrollHeight = document.documentElement.scrollHeight;
+                if (scrollTop + clientHeight < scrollHeight) {
+                  window.scrollTo(0, scrollTop + step);
+                  scrollTop =
+                    document.documentElement.scrollTop ||
+                    document.body.scrollTop;
+                } else {
+                  console.log('clear interval');
+                  onEnd();
+                  clearInterval(timer); // 清除定时器
+                }
+              }, interval);
             }
-            if (!offerId) {
-              continue;
+            const collect = () => {
+              const tmpImgList: CheckType[] = [];
+              const offerList = document.querySelector(
+                'div.space-common-offerlist',
+              );
+              const imgs = offerList?.querySelectorAll('img.main-img');
+              for (const img of imgs ?? []) {
+                const fatherA = img.closest('a');
+                const fatherAChildA = img
+                  .closest('a')
+                  ?.querySelector('div.hover-actions>a');
+                const title = fatherA
+                  ?.querySelector('div.title-text')
+                  ?.textContent?.trim();
+                let offerId =
+                  URL.parse(
+                    fatherAChildA?.getAttribute('href') ?? '',
+                  )?.searchParams.get('offerIds') ?? '';
+                if (!offerId) {
+                  offerId =
+                    (fatherA?.getAttribute('href') ?? '').match(
+                      'offer/(?<offerId>.*).html',
+                    )?.groups?.offerId ?? '';
+                }
+                if (!offerId) {
+                  offerId =
+                    fatherA
+                      ?.getAttribute('data-renderkey')
+                      ?.split('_')
+                      .at(-1) ?? '';
+                }
+                if (!offerId) {
+                  const firstOfferId = fatherA
+                    ?.getAttribute('data-aplus-report')
+                    ?.split('^')
+                    .filter((i) => i.includes('offerId'))[0];
+
+                  offerId = firstOfferId?.split('@').at(-1) ?? '';
+                }
+                if (!offerId) {
+                  continue;
+                }
+                tmpImgList.push({
+                  id: offerId,
+                  label: img.getAttribute('src') ?? '',
+                  title: title ?? '',
+                });
+              }
+              chrome.runtime.sendMessage({
+                type: 'alibabaSearchList',
+                data: tmpImgList,
+              });
+            };
+            if (result.alibabaScrollToBottom) {
+              funcScrollToBottom(100, 50, collect);
+            } else {
+              collect();
             }
-            tmpImgList.push({
-              id: offerId,
-              label: img.getAttribute('src') ?? '',
-              title: title ?? '',
-            });
-          }
-          chrome.runtime.sendMessage({
-            type: 'alibabaSearchList',
-            data: tmpImgList,
           });
         },
       });
