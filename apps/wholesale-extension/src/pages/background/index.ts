@@ -1,3 +1,5 @@
+import { MessageType } from '@/lib/constant';
+
 chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
@@ -54,3 +56,21 @@ setInterval(async () => {
       console.log(err);
     });
 }, 10000);
+
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+  let res;
+  switch (request.type) {
+    case MessageType.ALIBABA_REQ:
+      res = await fetch(
+        `${import.meta.env.VITE_API_HOST}/api/p1/v1/ali/pallets`,
+        {
+          credentials: 'include',
+        },
+      );
+      console.log('abc 123');
+      sendResponse({
+        data: await res.json(),
+      });
+      break;
+  }
+});
