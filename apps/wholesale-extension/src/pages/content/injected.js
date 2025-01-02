@@ -48,13 +48,22 @@ const getRequestPath = (urlString) => {
           '/h5/mtop.alibaba.alisite.cbu.server.moduleasyncservice/1.0/',
         ].includes(pathname)
       ) {
-        chrome.runtime.sendMessage(
-          localStorage.getItem('wholesaleExtensionId'),
-          {
-            type: 'alibabaStoreProducts',
-            data: this.response,
-          },
-        );
+        const div = document.createElement('div');
+        div.setAttribute('id', 'alibabaProductsResponse');
+        div.textContent = this.response;
+        div.setAttribute('style', 'display: none;');
+        document.body.appendChild(div);
+        try {
+          chrome.runtime.sendMessage(
+            localStorage.getItem('wholesaleExtensionId'),
+            {
+              type: 'alibabaStoreProducts',
+              data: this.response,
+            },
+          );
+        } catch (e) {
+          console.error(e);
+        }
       }
     });
     return send.apply(this, arguments);

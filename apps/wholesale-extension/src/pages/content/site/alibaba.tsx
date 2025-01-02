@@ -1,5 +1,17 @@
 import { scrollToBottom } from '@/lib/dom';
 import { findOfferId } from '@/lib/utils';
+const getTitleMap = () => {
+  const tmpAlibabaProductsResponse = JSON.parse(
+    document.getElementById('alibabaProductsResponse')?.textContent ?? '{}',
+  );
+  const titleMap: Map<string, string> = new Map();
+  tmpAlibabaProductsResponse?.data?.content?.offerList?.forEach(
+    (item: { subject: string; id: string }) => {
+      titleMap.set(item?.subject, item?.id);
+    },
+  );
+  return titleMap;
+};
 
 const initSubmit = () => {
   const submitButton = document.createElement('button');
@@ -15,8 +27,17 @@ const initSubmit = () => {
     .querySelector('button#wholesale-extension-submit')
     ?.addEventListener('click', () => {
       const offerIdList = [];
+      const titleMap = getTitleMap();
       for (const i of document.querySelectorAll('input.abcclass:checked')) {
-        const offerId = findOfferId(i);
+        let offerId = findOfferId(i);
+        if (!offerId) {
+          offerId =
+            titleMap.get(
+              i?.parentElement?.parentElement?.nextElementSibling
+                ?.querySelector('p')
+                ?.textContent?.trim() ?? '不存在',
+            ) ?? '';
+        }
         if (offerId) {
           offerIdList.push(offerId);
         }
@@ -39,10 +60,19 @@ const initSelectAll = () => {
   document
     .querySelector('button#wholesale-extension-selectall')
     ?.addEventListener('click', async () => {
+      const titleMap = getTitleMap();
       // 调用函数，每50毫秒滚动100像素
       scrollToBottom(100, 50, () => {
         for (const i of document.querySelectorAll('input.abcclass')) {
-          const offerId = findOfferId(i);
+          let offerId = findOfferId(i);
+          if (!offerId) {
+            offerId =
+              titleMap.get(
+                i?.parentElement?.parentElement?.nextElementSibling
+                  ?.querySelector('p')
+                  ?.textContent?.trim() ?? '不存在',
+              ) ?? '';
+          }
           //@ts-expect-error ts(2339)
           if (offerId && !i.disabled) {
             i.setAttribute('checked', 'checked');
@@ -62,7 +92,6 @@ const obs = new MutationObserver(() => {
   for (const mainPicture of mainPictures) {
     const button = document.createElement('input');
 
-    button.setHTMLUnsafe('采集');
     button.setAttribute('class', 'abcclass');
     button.setAttribute('type', 'checkbox');
     button.setAttribute('name', 'offerId[]');
@@ -71,9 +100,8 @@ const obs = new MutationObserver(() => {
       mainPicture.parentElement?.setAttribute('style', 'position: relative;');
       mainPicture.parentElement?.appendChild(button);
       mainPicture.parentElement
-        ?.querySelector('button.abcclass')
+        ?.querySelector('input.abcclass')
         ?.addEventListener('click', (e) => {
-          alert('hello');
           e.stopImmediatePropagation();
         });
     }
@@ -82,7 +110,6 @@ const obs = new MutationObserver(() => {
   for (const mainImg of mainImgs) {
     const button = document.createElement('input');
 
-    button.setHTMLUnsafe('采集');
     button.setAttribute('class', 'abcclass');
     button.setAttribute('type', 'checkbox');
     button.setAttribute('name', 'offerId[]');
@@ -90,9 +117,8 @@ const obs = new MutationObserver(() => {
     if (!mainImg.parentElement?.querySelector('input.abcclass')) {
       mainImg.parentElement?.appendChild(button);
       mainImg.parentElement
-        ?.querySelector('button.abcclass')
+        ?.querySelector('input.abcclass')
         ?.addEventListener('click', (e) => {
-          alert('hello');
           e.stopImmediatePropagation();
         });
     }
