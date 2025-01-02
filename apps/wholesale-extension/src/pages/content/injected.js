@@ -48,10 +48,13 @@ const getRequestPath = (urlString) => {
           '/h5/mtop.alibaba.alisite.cbu.server.moduleasyncservice/1.0/',
         ].includes(pathname)
       ) {
-        chrome.runtime.sendMessage('nlgclliiihmeiiphlhphjgjahdghloah', {
-          type: 'alibabaStoreProducts',
-          data: this.response,
-        });
+        chrome.runtime.sendMessage(
+          localStorage.getItem('wholesaleExtensionId'),
+          {
+            type: 'alibabaStoreProducts',
+            data: this.response,
+          },
+        );
       }
     });
     return send.apply(this, arguments);

@@ -43,6 +43,10 @@
       "js": ["src/pages/content/index.tsx"],
       "run_at": "document_start",
       "css": ["contentStyle.css"]
+    },
+    {
+      "matches": ["*://*.1688.com/*"],
+      "js": ["src/pages/content/site/alibaba.tsx"]
     }
   ],
   "externally_connectable": {
@@ -59,8 +63,10 @@
       "matches": ["<all_urls>"]
     },
     {
-      "resources": ["src/pages/content/injected.js"],
-      "run_at": "document_start",
+      "resources": [
+        "src/pages/content/injected.js",
+        "src/pages/content/site/alibaba.tsx"
+      ],
       "matches": ["*://*.1688.com/*"],
       "all_frames": true
     }

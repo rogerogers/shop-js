@@ -43,6 +43,11 @@ migrate-status:
 prisma-studio:
 	@cd prisma && prisma studio
 
+.PHONY: pack
+pack:
+	bash ./scripts/pack.sh
+
 .PHONY: help
 help:
 	@echo help
+

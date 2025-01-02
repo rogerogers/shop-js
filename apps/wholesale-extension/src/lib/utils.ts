@@ -40,3 +40,51 @@ export function getDomain(urlString: string) {
     return null;
   }
 }
+
+export const sendMessage = (msg: object) => {
+  chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    const activeTab = tabs[0];
+    if (activeTab.id != null) {
+      chrome.tabs.sendMessage(activeTab.id, {
+        message: msg,
+      });
+    }
+  });
+};
+
+export const findOfferId = (ele: Element) => {
+  const fatherA = ele.closest('a');
+  const fatherAChildA = ele.closest('a')?.querySelector('div.hover-actions>a');
+  let offerId =
+    URL.parse(fatherAChildA?.getAttribute('href') ?? '')?.searchParams.get(
+      'offerIds',
+    ) ?? '';
+  if (!offerId) {
+    offerId =
+      (fatherA?.getAttribute('href') ?? '').match('offer/(?<offerId>.*).html')
+        ?.groups?.offerId ?? '';
+  }
+  if (!offerId) {
+    offerId = fatherA?.getAttribute('data-renderkey')?.split('_').at(-1) ?? '';
+  }
+  if (!offerId) {
+    const firstOfferId = fatherA
+      ?.getAttribute('data-aplus-report')
+      ?.split('^')
+      .filter((i) => i.includes('offerId'))[0];
+
+    offerId = firstOfferId?.split('@').at(-1) ?? '';
+  }
+  if (!offerId) {
+    return '';
+  }
+  return offerId;
+};
+
+export const sleep = (second: number) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, second * 1000);
+  });
+};
