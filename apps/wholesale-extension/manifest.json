@@ -47,6 +47,11 @@
     {
       "matches": ["*://*.1688.com/*"],
       "js": ["src/pages/content/site/alibaba.tsx"]
+    },
+    {
+      "matches": ["*://air.1688.com/*"],
+      "all_frames": true,
+      "js": ["src/pages/content/site/shein.tsx"]
     }
   ],
   "externally_connectable": {
@@ -68,6 +73,14 @@
         "src/pages/content/site/alibaba.tsx"
       ],
       "matches": ["*://*.1688.com/*"],
+      "all_frames": true
+    },
+    {
+      "resources": [
+        "src/pages/content/injected.js",
+        "src/pages/content/site/shein.tsx"
+      ],
+      "matches": ["*://*.shein.com/*", "*://air.1688.com/*"],
       "all_frames": true
     }
   ]

@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { LocalStoreKeys } from './constant';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -50,6 +52,20 @@ export const sendMessage = (msg: object) => {
       });
     }
   });
+};
+
+export const sendContentMessage = (
+  msg: object,
+  callback?: (response: any) => void,
+) => {
+  const defaultCallback = (response: any) => {
+    console.log(response);
+  };
+  chrome.runtime.sendMessage(
+    localStorage.getItem(LocalStoreKeys.WHOLESALE_EXTENSION_ID),
+    msg,
+    callback ?? defaultCallback,
+  );
 };
 
 export const findOfferId = (ele: Element) => {

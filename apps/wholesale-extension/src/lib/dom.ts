@@ -18,3 +18,15 @@ export function scrollToBottom(
     }
   }, interval);
 }
+
+export function getElementByXpath(path: string) {
+  return document.evaluate(
+    path,
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null,
+  ).singleNodeValue;
+}
+
+export const obsConfig = { attributes: true, childList: true, subtree: true };

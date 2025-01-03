@@ -48,6 +48,12 @@ const getRequestPath = (urlString) => {
           '/h5/mtop.alibaba.alisite.cbu.server.moduleasyncservice/1.0/',
         ].includes(pathname)
       ) {
+        document.querySelectorAll('input.abcclass').forEach((div) => {
+          div.remove();
+        });
+        if (document.getElementById('alibabaProductsResponse')) {
+          document.getElementById('alibabaProductsResponse').remove();
+        }
         const div = document.createElement('div');
         div.setAttribute('id', 'alibabaProductsResponse');
         div.textContent = this.response;

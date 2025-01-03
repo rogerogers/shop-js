@@ -1,6 +1,6 @@
 {
   "name": "wholesale-extension",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple chrome & firefox extension template with Vite, React, TypeScript and Tailwind CSS.",
   "license": "MIT",
   "scripts": {

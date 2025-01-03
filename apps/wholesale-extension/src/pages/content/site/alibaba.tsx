@@ -1,6 +1,18 @@
-import { DataKey } from '@/lib/constant';
-import { scrollToBottom } from '@/lib/dom';
-import { findOfferId } from '@/lib/utils';
+import { DataKey, ElementId, MessageType } from '@/lib/constant';
+import { getElementByXpath } from '@/lib/dom';
+import { findOfferId, sendContentMessage } from '@/lib/utils';
+const initDataDiv = () => {
+  const div = document.createElement('div');
+  div.setAttribute('id', ElementId.ALIBABA_PAGE_DATA);
+  div.setAttribute('style', 'display: none;');
+  document.body.appendChild(div);
+};
+initDataDiv();
+
+const getDataDiv = () => {
+  return document.getElementById(ElementId.ALIBABA_PAGE_DATA);
+};
+
 const getTitleMap = () => {
   const tmpAlibabaProductsResponse = JSON.parse(
     document.getElementById('alibabaProductsResponse')?.textContent ?? '{}',
@@ -34,7 +46,15 @@ const initSubmit = () => {
           offerIdList.push(offerId);
         }
       }
-      console.log(offerIdList);
+      sendContentMessage(
+        {
+          type: MessageType.ALIBABA_COLLECT_PRODUCTS,
+          data: offerIdList,
+        },
+        (res) => {
+          console.log(res);
+        },
+      );
     });
 };
 initSubmit();
@@ -53,23 +73,21 @@ const initSelectAll = () => {
     .querySelector('button#wholesale-extension-selectall')
     ?.addEventListener('click', async () => {
       // 调用函数，每50毫秒滚动100像素
-      scrollToBottom(100, 50, () => {
-        for (const i of document.querySelectorAll('input.abcclass')) {
-          const offerId = i.getAttribute(DataKey.OFFER_ID);
+      for (const i of document.querySelectorAll('input.abcclass')) {
+        const offerId = i.getAttribute(DataKey.OFFER_ID);
+        //@ts-expect-error ts(2339)
+        if (offerId && !i.disabled) {
           //@ts-expect-error ts(2339)
-          if (offerId && !i.disabled) {
-            //@ts-expect-error ts(2339)
-            i.checked = true;
-          }
+          i.checked = true;
         }
-      });
+      }
     });
 };
 
 initSelectAll();
 
 const config = { attributes: true, childList: true, subtree: true };
-const checkBoxStyle = `position: absolute; top: 0; left: 0; height: 33px; width: 33px; cursor: pointer;`;
+const checkBoxStyle = `position: absolute; top: 0; left: 0; height: 33px; width: 33px; cursor: pointer; z-index: 99;`;
 
 const obs = new MutationObserver(() => {
   const mainPictures = document.querySelectorAll('img.main-picture');
@@ -136,6 +154,50 @@ const obs = new MutationObserver(() => {
         ?.addEventListener('click', (e) => {
           e.stopImmediatePropagation();
         });
+    }
+  }
+  const checkOfferIds: string[] = [];
+  document.querySelectorAll(`input.abcclass`).forEach((i) => {
+    const offerId = i.getAttribute(DataKey.OFFER_ID);
+    if (i.getAttribute(DataKey.EXISTS_CHECKED) === 'yes') {
+      return;
+    }
+    if (offerId) {
+      i.setAttribute(DataKey.EXISTS_CHECKED, 'yes');
+      checkOfferIds.push(offerId);
+    }
+  });
+  if (checkOfferIds.length > 0) {
+    sendContentMessage(
+      {
+        type: MessageType.ALIBABA_COLLECT_PRODUCTS_EXISTS,
+        data: checkOfferIds,
+      },
+      (res) => {
+        for (const i of res.data?.data ?? []) {
+          const offerId = i;
+          const input = document.querySelector(
+            `input.abcclass[${DataKey.OFFER_ID}="${offerId}"]`,
+          );
+          if (input) {
+            //@ts-expect-error ts(2339)
+            input.disabled = true;
+          }
+        }
+      },
+    );
+  }
+  if (
+    document
+      .querySelectorAll('input.abcclass')
+      ?.values()
+      .every((i) => !i.getAttribute(DataKey.OFFER_ID))
+  ) {
+    const dataDiv = getDataDiv();
+    if (!dataDiv?.getAttribute(DataKey.REFETCHED)) {
+      const prevPageEle = getElementByXpath("//button[text()='< 上一页']");
+      // @ts-expect-error ts(2339)
+      prevPageEle?.nextSibling?.click();
     }
   }
 });
